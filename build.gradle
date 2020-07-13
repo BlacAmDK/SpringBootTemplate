@@ -1,0 +1,66 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id "com.thinkimi.gradle.MybatisGenerator" version "2.2"
+    id 'application'
+    id 'java'
+    id 'idea'
+}
+
+group = 'com.blacamdk'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'mysql:mysql-connector-java'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.2'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2:2.2.7.RELEASE'
+    implementation 'org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.1.4'
+    implementation 'org.aspectj:aspectjweaver:1.9.5'
+    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'com.google.code.gson:gson:2.8.6'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-json'
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
+configurations {
+    mybatisGenerator
+}
+
+bootRun {
+    jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
+}
+
+application {
+    mainClassName = 'com.blacamdk.template.TemplateApplication'
+}
+
+mybatisGenerator {
+    verbose = true
+    configFile = 'src/main/resources/generatorConfig.xml'
+
+    dependencies {
+        mybatisGenerator 'org.mybatis.generator:mybatis-generator-core:1.4.0'
+        mybatisGenerator 'mysql:mysql-connector-java:8.0.20'
+    }
+}
+
